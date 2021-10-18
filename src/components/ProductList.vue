@@ -104,6 +104,19 @@ export default {
             pageNumber: 1
         }
     },
+    watch: {
+      // reset pagination when filtering
+      filterName() {
+        this.pageNumber = 1;
+      },
+      // reset pagination when sorting
+      sortName() {
+        this.pageNumber = 1;
+      },
+      sortDir() {
+        this.pageNumber = 1;
+      }
+    },
 };
 </script>
 
