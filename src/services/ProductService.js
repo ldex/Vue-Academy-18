@@ -26,5 +26,8 @@ export default {
     return apiClient
             .get(RESOURCE_NAME + sortParams)
             .then(products => new Promise(resolve => setTimeout(() => resolve(products), 500)))  // slowing down the response for testing purpose...
+  },
+  getProduct(id) {
+    return apiClient.get(`${RESOURCE_NAME}/${id}`)
   }
 }

@@ -14,7 +14,7 @@
         :title="JSON.stringify(product)"
         v-bind:key="product.id"
         v-bind:class="{ discontinued: product.discontinued, selected: product === selectedProduct }"
-        @click="selectedProduct = product"
+        @click="onSelect(product)"
       >
         <span class="name">{{ product.name }}</span>
         <span class="description">{{ product.description }}</span>
@@ -30,16 +30,11 @@
       Next &gt;
     </button>
 
-    <product-details :product="selectedProduct"></product-details>
   </div>
 </template>
 
 <script>
-import ProductDetails from './ProductDetails.vue';
 export default {
-    components: {
-      ProductDetails
-    },
     props: {
         products: {
             type: Array,
@@ -66,6 +61,9 @@ export default {
       prevPage() {
         this.pageNumber--;
         this.selectedProduct = null;
+      },
+      onSelect(product) {
+        this.$router.push({ name: "product", params: { id: product.id } });
       }
     },
     computed: {
