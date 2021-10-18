@@ -5,7 +5,7 @@
       <li
         v-for="product in products"
         v-bind:key="product.id"
-        v-bind:class="{ discontinued: product.discontinued }"
+        v-bind:class="{ discontinued: product.discontinued, selected: product === selectedProduct }"
         @click="selectedProduct = product"
       >
         <span class="name">{{ product.name }}</span>
