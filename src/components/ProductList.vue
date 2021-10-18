@@ -1,9 +1,16 @@
 <template>
   <div>
     <h2>{{ title }}</h2>
+    <fieldset class="filters">
+      Sort by:
+      <button @click="sort('name')">Name</button>
+      <button @click="sort('price')">Price</button>
+      <button @click="sort('modifiedDate')">Date</button>
+      <span>Filter by name: <input v-model="filterName" /></span>
+    </fieldset>
     <ul class="products">
       <li
-        v-for="product in products"
+        v-for="product in sortedFilteredPaginatedProducts"
         :title="JSON.stringify(product)"
         v-bind:key="product.id"
         v-bind:class="{ discontinued: product.discontinued, selected: product === selectedProduct }"
@@ -15,6 +22,14 @@
       </li>
     </ul>
 
+    <button @click="prevPage" :disabled="pageNumber===1">
+      &lt; Previous
+    </button>
+    Page {{ pageNumber }}
+    <button @click="nextPage" :disabled="pageNumber >= pageCount">
+      Next &gt;
+    </button>
+
     <product-details :product="selectedProduct"></product-details>
   </div>
 </template>
@@ -22,18 +37,72 @@
 <script>
 import ProductDetails from './ProductDetails.vue';
 export default {
-    components: { ProductDetails },
+    components: {
+      ProductDetails
+    },
     props: {
         products: {
             type: Array,
             default: () => []
+        },
+        pageSize: {
+          type: Number,
+          required: false,
+          default: 5
         }
+    },
+    methods: {
+      sort:function(s) {
+        //if s == current sort, reverse order
+        if(s === this.sortName) {
+          this.sortDir = this.sortDir==='asc'?'desc':'asc';
+        }
+        this.sortName = s;
+      },
+      nextPage() {
+        this.pageNumber++;
+        this.selectedProduct = null;
+      },
+      prevPage() {
+        this.pageNumber--;
+        this.selectedProduct = null;
+      }
+    },
+    computed: {
+      filteredProducts() {
+        let filter = new RegExp(this.filterName, 'i');
+        return this.products.filter(el => el.name.match(filter));
+      },
+      sortedFilteredProducts() {
+        return [...this.filteredProducts].sort((a,b) => {
+          let modifier = 1;
+          if(this.sortDir === 'desc') modifier = -1;
+          if(a[this.sortName] < b[this.sortName]) return -1 * modifier;
+          if(a[this.sortName] > b[this.sortName]) return 1 * modifier;
+          return 0;
+        })
+      },
+      sortedFilteredPaginatedProducts() {
+        const start = (this.pageNumber-1) * this.pageSize,
+              end = start + this.pageSize;
+
+        return this.sortedFilteredProducts.slice(start, end);
+      },
+      pageCount() {
+        let l = this.filteredProducts.length,
+          s = this.pageSize;
+        return Math.ceil(l / s);
+      }
     },
     data() {
         return {
             title: "Products",
-            selectedProduct: null
-        };
+            selectedProduct: null,
+            filterName: '',
+            sortName: 'modifiedDate',
+            sortDir: 'desc',
+            pageNumber: 1
+        }
     },
 };
 </script>
@@ -41,6 +110,9 @@ export default {
 <style lang="css" scoped>
 .filters {
   padding: 10px;
+}
+.filters button {
+  margin-right: 5px
 }
 .products {
   margin: 0;
