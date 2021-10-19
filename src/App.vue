@@ -5,6 +5,9 @@
       <router-link to="/">Home</router-link>
       <router-link to="/products">Products</router-link>
       <router-link to="/about">About</router-link>
+      <router-link to="/admin">Admin</router-link>
+      <router-link v-if="!loggedIn" to="/login">Login</router-link>
+      <a v-else @click="logout">Logout</a>
     </nav>
     <router-view v-slot="{ Component }">
       <transition name="page" mode="out-in">
@@ -15,6 +18,26 @@
     <footer>Copyright Vue Academy 2021</footer>
   </div>
 </template>
+
+<script>
+import { mapGetters, mapActions } from "vuex";
+
+export default {
+    computed: {
+      ...mapGetters(["loggedIn"])
+    },
+    created() {
+      this.checkPreviousLogin(); // check if there is an existing auth token when we enter the app
+    },
+    methods: {
+      logout() {
+        localStorage.removeItem("auth_token");
+        location.reload();
+      },
+      ...mapActions(['checkPreviousLogin'])
+  }
+}
+</script>
 
 <style>
 
