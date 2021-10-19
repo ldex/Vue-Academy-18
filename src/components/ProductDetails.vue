@@ -15,6 +15,7 @@
                 <p>Fixed price? {{product.fixedPrice}}</p>
                 <p>Discontinued? {{product.discontinued}}</p>
                 <p>Modified date: {{product.modifiedDate }}</p>
+                <button @click="deleteConfirm">Delete</button>
             </div>
         </section>
     </div>
@@ -40,7 +41,19 @@ import { mapState, mapActions } from 'vuex'
             ...mapState({loading:'isLoading'})
         },
         methods: {
-            ...mapActions(['fetchProduct']) // map `this.fetchProduct(this.id)` to `this.$store.dispatch('fetchProduct', this.id)`
+            deleteConfirm() {
+              if (window.confirm("Are you sure ??")) {
+                this.deleteProduct(this.product)
+                .then(() => {
+                  console.log('The product has been deleted.');
+                  this.$router.push({ name: 'products'});
+                  })
+                .catch(error => {
+                  console.log('There was an error:', error.response);
+                });
+              }
+            },
+            ...mapActions(['fetchProduct','deleteProduct'])
         },
         created () {
             this.fetchProduct(this.id);

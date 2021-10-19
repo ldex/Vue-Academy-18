@@ -22,6 +22,9 @@ export default createStore({
     SET_PRODUCT(state, payload) {
       state.product = payload;
     },
+    REMOVE_PRODUCT(state, id) {
+      state.products = state.products.filter(product => product.id != id);
+    },
     SET_TOKEN(state, payload) {
       state.token = payload
     }
@@ -49,6 +52,11 @@ export default createStore({
     async fetchProducts({commit}) {
       const response = await ProductService.getProducts()
       commit('SET_PRODUCTS', response.data);
+    },
+    deleteProduct({ commit }, product) {
+      return ProductService.deleteProduct(product).then(() => {
+        commit("REMOVE_PRODUCT", product.id);
+      });
     },
     login ({ commit }, credentials) {
       return axios
