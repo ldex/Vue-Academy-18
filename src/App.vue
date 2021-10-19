@@ -6,7 +6,11 @@
       <router-link to="/products">Products</router-link>
       <router-link to="/about">About</router-link>
     </nav>
-    <router-view/>
+    <router-view v-slot="{ Component }">
+      <transition name="page" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
     <hr />
     <footer>Copyright Vue Academy 2021</footer>
   </div>
@@ -198,4 +202,31 @@ nav a.router-link-exact-active {
   }
 
   @keyframes spin  { to { transform: translateY( -6.0em); } }
+
+
+  /* transitions */
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+
+  @keyframes acrossIn {
+    0% { transform: translate3d(-100%, 0, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+  }
+
+  @keyframes acrossOut {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(100%, 0, 0); }
+  }
+
+  .page-enter-active {
+    animation: bounceIn .45s ease-out both;
+  }
+
+  .page-leave-active {
+    animation: flipOutX .65s ease-in both;
+  }
 </style>

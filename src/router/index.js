@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Products from '@/views/Products.vue';
 import Error from '@/views/Error.vue';
 import ProductDetails from '@/components/ProductDetails.vue';
+import ProductInsert from '@/components/ProductInsert.vue';
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     name: 'product',
     component: ProductDetails,
     props: castRouteParamsId
+  },
+  {
+    path: '/product/insert',
+    name: 'productInsert',
+    component: ProductInsert
   },
   {
     path: '/about',

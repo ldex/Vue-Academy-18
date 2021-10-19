@@ -21,6 +21,10 @@ export default {
   components: {
     ProductList
   },
+  errorCaptured: function(error) {
+      console.error('Error in component: ', error.message);
+      return true;
+  },
   data() {
     return {
       products: [],
