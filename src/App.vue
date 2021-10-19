@@ -9,10 +9,21 @@
       <router-link v-if="!loggedIn" to="/login">Login</router-link>
       <a v-else @click="logout">Logout</a>
     </nav>
-    <router-view v-slot="{ Component }">
-      <transition name="page" mode="out-in">
-        <component :is="Component" />
-      </transition>
+    <router-view v-slot="{ Component }" :key="$route.fullPath">
+      <template v-if="Component">
+        <transition name="page" mode="out-in">
+            <suspense>
+              <template #default>
+                <component :is="Component"></component>
+              </template>
+              <template #fallback>
+                <div style="margin-top:20px">
+                  <h2 class="loading">Loading</h2>
+                </div>
+              </template>
+            </suspense>
+        </transition>
+      </template>
     </router-view>
     <hr />
     <footer>Copyright Vue Academy 2021</footer>

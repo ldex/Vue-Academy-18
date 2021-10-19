@@ -33,14 +33,6 @@ export default createStore({
           commit('ADD_PRODUCT', newProduct);
         })
     },
-    fetchProducts({commit}) {
-      commit('SET_LOADING_STATUS');
-      return ProductService.getProducts()
-        .then(response => {
-          commit('SET_PRODUCTS', response.data);
-        })
-        .finally(() => commit('SET_LOADING_STATUS'));
-    },
     fetchProduct({commit,getters}, id) {
       let p = getters.getProductById(id);
       if(p == null) {
@@ -53,6 +45,10 @@ export default createStore({
       } else {
         commit('SET_PRODUCT', p);
       }
+    },
+    async fetchProducts({commit}) {
+      const response = await ProductService.getProducts()
+      commit('SET_PRODUCTS', response.data);
     },
     login ({ commit }, credentials) {
       return axios
